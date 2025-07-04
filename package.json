@@ -1,0 +1,30 @@
+{
+  "name": "@rex/pulse",
+  "version": "1.0.0",
+  "description": "⚡ Pulse — blazing-fast, browser-native internet speed tester using fetch streams.",
+  "main": "index.js",
+  "type": "module",
+  "keywords": [
+    "pulse",
+    "speedtest",
+    "internet",
+    "network",
+    "bandwidth",
+    "browser",
+    "parallel",
+    "fetch",
+    "ping",
+    "download",
+    "upload"
+  ],
+  "author": "Aditya Rathod",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adirathod1822/pulse"
+  },
+  "bugs": {
+    "url": "https://github.com/adirathod1822/pulse/issues"
+  },
+  "homepage": "https://github.com/adirathod1822/pulse#readme"
+}
