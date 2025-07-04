@@ -1,5 +1,5 @@
 {
-  "name": "@rex/pulse",
+  "name": "@onlyrex/pulse",
   "version": "1.0.0",
   "description": "⚡ Pulse — blazing-fast, browser-native internet speed tester using fetch streams.",
   "main": "index.js",
