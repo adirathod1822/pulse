@@ -1,18 +1,21 @@
-// index.js for @onlyrex/pulse (v1.1.2)
-
 const DEFAULT_DOWNLOAD_URL = 'https://speed.cloudflare.com/__down?bytes=100000000';
 const DEFAULT_UPLOAD_URL = 'https://httpbin.org/post';
-const DEFAULT_PING_URL = 'https://www.cloudflare.com/cdn-cgi/trace';
+const DEFAULT_PING_URL = 'https://www.google.com/generate_204';
 
-export async function testPing(url = DEFAULT_PING_URL, count = 5) {
-  let total = 0;
+export async function testPing(url = DEFAULT_PING_URL, count = 10) {
+  try{let total = 0;
   for (let i = 0; i < count; i++) {
     const start = performance.now();
-    await fetch(url, { method: 'HEAD', cache: 'no-store' });
+    await fetch(url, { mode: "no-cors", cache: 'no-cache' });
     const end = performance.now();
     total += end - start;
   }
   return (total / count).toFixed(2); // ms
+  }
+  catch(error){
+    console.log(`error while pinging ${url}`)
+    throw error
+  }
 }
 
 export async function testDownload({
@@ -42,8 +45,7 @@ export async function testDownload({
   }, 200);
 
   const downloads = Array.from({ length: 8 }, fetchChunk);
-
-  // Set timeout that triggers controller.abort()
+  
   setTimeout(() => controller.abort(), durationSeconds * 1000);
 
   try {

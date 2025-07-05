@@ -1,4 +1,3 @@
-// index.d.ts
 export function testPing(
   url?: string,
   count?: number,
