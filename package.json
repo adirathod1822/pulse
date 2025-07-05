@@ -1,9 +1,12 @@
 {
   "name": "@onlyrex/pulse",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "⚡ Pulse — blazing-fast, browser-native internet speed tester using fetch streams.",
   "main": "index.js",
   "type": "module",
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  },
   "keywords": [
     "pulse",
     "speedtest",
