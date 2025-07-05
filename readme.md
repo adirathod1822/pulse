@@ -129,17 +129,15 @@ import { testPing, testDownload, testUpload } from '@onlyrex/pulse';
 ## 🔧 pulse-comp.component.ts
 ```ts
 import { Component } from '@angular/core';
-import { testPing, testDownload, testUpload } from '@onlyrex/pulse';
-
+import { testDownload, testPing, testUpload } from '@onlyrex/pulse'
 @Component({
-  selector: 'app-pulse-comp',
-  standalone: true,
+  selector: 'app-pulse',
   imports: [],
-  templateUrl: './pulse-comp.html',
-  styleUrls: ['./pulse-comp.css'] 
+  templateUrl: './pulse.html',
+  styleUrl: './pulse.css'
 })
-export class PulseComp {
-  ping: string = '0.00';
+export class Pulse {
+  ping: any = 0.00;
   download: string = '0.00';
   upload: string = '0.00';
   loading: boolean = false;
@@ -149,7 +147,8 @@ export class PulseComp {
 
     try {
       const pingResult = await testPing();
-      this.ping = pingResult.ping.toFixed(2);
+      console.log('pingResult.ping====>', pingResult)
+      this.ping = pingResult;
 
       this.download = '0.00';
       await testDownload({
@@ -161,7 +160,6 @@ export class PulseComp {
 
       this.upload = '0.00';
       await testUpload({
-        durationSeconds: 10,
         onProgress: (mbps: string) => {
           this.upload = parseFloat(mbps).toFixed(2);
         },
@@ -175,6 +173,7 @@ export class PulseComp {
     }
   }
 }
+
 ```
 
 
