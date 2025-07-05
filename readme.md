@@ -26,10 +26,9 @@
 **Pulse** is a modern internet speed test tool for web apps. Inspired by tools like [Fast.com](https://fast.com), it uses **parallel fetch streams**, **live speed updates**, and **no external dependencies** to measure your actual network bandwidth directly from the browser.
 
 Built for:
-- React ⚛️
-- Angular 🅰️
-- Next.js 🔼
-- Vanilla JS 🌐
+- [React ⚛️](#React)
+- [Angular 🅰️](#Angular)
+- [Vanilla JS 🌐](#Vanilla-JS)
 
 ---
 
@@ -45,7 +44,138 @@ Everything runs **client-side only** — no backend needed.
 
 ---
 
+## 🧠 Summary
+
+| Method                         | Shows Live Progress? | Final Result? |
+| ------------------------------ | -------------------- | ------------- |
+| `runSpeedTest()`               | ❌ No                 | ✅ Yes         |
+| `testPing()`                   | ❌ No                 | ✅ Yes         |
+| `testDownload({ onProgress })` | ✅ Yes                | ✅ Yes         |
+| `testUpload({ onProgress })`   | ✅ Yes                | ✅ Yes         |
+
+---
+
+
+
+* Runs all 3 tests and returns the final results.
+
+
+---
+
 ## 📦 Installation
 
 ```bash
 npm install @onlyrex/pulse
+```
+---
+# 📘 API Reference
+
+## Vanilla JS
+### `runSpeedTest(options?) → Promise<{ ping, download, upload }>`
+
+- Runs all 3 tests — `ping`, `download`, and `upload` — and returns final results.
+- It internally calls **testPing**, **testDownload**, and **testUpload** without exposing their real-time progress.
+
+```js
+import { runSpeedTest } from '@onlyrex/pulse';
+
+const result = await runSpeedTest();
+console.log(result);
+
+// result → { ping: "16.87", download: "74.21", upload: "9.45" }
+```
+Unless you want real-time progress you have to pass a *callback* like onProgress to **testDownload()** or **testUpload()**
+
+### `testPing(url?: string, count?: number): Promise<string>`
+- Measures average latency using multiple HEAD requests.
+- url: Optional ping target (default: google.com)
+- count: Number of ping attempts (default: 5)
+
+### `testDownload({ durationSeconds = 15, url, onProgress }): Promise<string>`
+- Performs 8 parallel fetches and measures speed.
+- durationSeconds: Duration in seconds (default: 15 Seconds)
+- url: Optional download target
+- onProgress: Callback for live Mbps updates
+
+### `testUpload({ sizeMB = 10, url, onProgress }): Promise<string>`
+- Streams binary data via POST to test upload bandwidth.
+- sizeMB: File size in MB
+- url: Upload endpoint
+- onProgress: Callback for live Mbps updates
+
+```js
+import { testPing, testDownload, testUpload } from '@onlyrex/pulse';
+
+(async () => {
+  const ping = await testPing();
+  console.log(`Ping: ${ping} ms`);
+
+  const download = await testDownload({
+    onProgress: (mbps) => console.log(`Download: ${mbps} Mbps`),
+  });
+
+  console.log(`Final Download: ${download} Mbps`);
+
+  const upload = await testUpload({
+    onProgress: (mbps) => console.log(`Upload: ${mbps} Mbps`),
+  });
+
+  console.log(`Final Upload: ${upload} Mbps`);
+})();
+
+```
+
+# Angular
+## 🔧 pulse-comp.component.ts
+```ts
+import { Component } from '@angular/core';
+import { testPing, testDownload, testUpload } from '@onlyrex/pulse';
+
+@Component({
+  selector: 'app-pulse-comp',
+  standalone: true,
+  imports: [],
+  templateUrl: './pulse-comp.html',
+  styleUrls: ['./pulse-comp.css'] 
+})
+export class PulseComp {
+  ping: string = '0.00';
+  download: string = '0.00';
+  upload: string = '0.00';
+  loading: boolean = false;
+
+  async runTest() {
+    this.loading = true;
+
+    try {
+      const pingResult = await testPing();
+      this.ping = pingResult.ping.toFixed(2);
+
+      this.download = '0.00';
+      await testDownload({
+        durationSeconds: 10,
+        onProgress: (mbps: string) => {
+          this.download = parseFloat(mbps).toFixed(2);
+        },
+      });
+
+      this.upload = '0.00';
+      await testUpload({
+        durationSeconds: 10,
+        onProgress: (mbps: string) => {
+          this.upload = parseFloat(mbps).toFixed(2);
+        },
+      });
+
+    } catch (error) {
+      console.error('Speed test failed:', error);
+      this.ping = this.download = this.upload = 'Error';
+    } finally {
+      this.loading = false;
+    }
+  }
+}
+```
+
+
+
